@@ -1,0 +1,399 @@
+/* src/index.css */
+
+/* --- 1. GLOBAL VARIABLES & RESET --- */
+:root {
+  --app-bg: #050505;          /* Pure Dark Black */
+  --form-bg: #11151e;         /* Card Background */
+  --input-bg: #ffffff;        /* White Input Background */
+  --text-main: #ffffff;       /* Main White Text */
+  --text-muted: #cbd5e1;      /* Light Grey for readability */
+  --accent: #2dd4bf;          /* Teal Accent */
+  --border-dashed: #334155;
+  --btn-dark: #1e293b;
+}
+
+html, body, #root {
+  background-color: var(--app-bg) !important;
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { cursor: pointer; }
+
+/* --- 2. BACKGROUND EFFECTS --- */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* --- 3. LANDING PAGE STYLES --- */
+.hero-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  gap: 4rem;
+  position: relative;
+  z-index: 2;
+  min-height: 80vh; 
+}
+
+/* Landing Page Buttons */
+.landing-nav {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.hero-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.text-slate { color: #a1a1aa; font-size: 1.1rem; }
+
+/* Desktop Image Style */
+.landing-image {
+  max-width: 60%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  margin-top: 4rem;
+}
+
+/* Mobile/Tablet Layout */
+@media (max-width: 968px) {
+  .hero-container {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 2rem;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  /* 1. Buttons */
+  .landing-nav {
+    position: static;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+    order: 1;
+  }
+
+  /* 2. Image */
+  .hero-image-container {
+    width: 100%;
+    order: 2;
+    margin-bottom: 1rem;
+  }
+  
+  .landing-image {
+    max-width: 80%;
+    margin-top: 0;
+  }
+
+  /* 3. Text */
+  .hero-content {
+    width: 100%;
+    order: 3;
+  }
+
+  .hero-title { font-size: 2.5rem; }
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #ffffff; 
+  color: #050505; 
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background-color: #f0f0f0; transform: translateY(-2px); }
+
+.btn-outline {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-outline:hover { background-color: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: #fff; }
+
+
+/* --- 4. FORM & PROFILE STYLES --- */
+
+h6, .text-uppercase.text-muted, .section-title {
+  color: #94a3b8 !important; 
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+  opacity: 1 !important;
+}
+
+/* Text Visibility Fix */
+p.text-muted, .bio-text {
+  color: var(--text-muted) !important;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.9 !important;
+}
+
+a.text-muted, .privacy-link {
+  color: #64748b !important;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a.text-muted:hover, .privacy-link:hover {
+  color: var(--accent) !important;
+  text-decoration: underline;
+}
+
+.text-white { color: #ffffff !important; }
+
+/* Card */
+.glass-card {
+  background: var(--form-bg);
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+/* Left Panel */
+.glass-card .col-lg-4 {
+  background-color: #000000 !important;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.glass-card .col-lg-4 p.text-muted { color: #cbd5e1 !important; opacity: 1; }
+
+h2.display-6 {
+  font-weight: 800 !important;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  font-size: 2.25rem;
+  line-height: 1.15;
+}
+
+.badge {
+  color: var(--accent) !important;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  padding: 6px 12px !important;
+  border-radius: 20px;
+}
+
+/* Inputs */
+.glass-input {
+  background-color: var(--input-bg) !important;
+  border: 1px solid transparent !important;
+  color: #000000 !important;
+  border-radius: 6px !important;
+  height: 48px;
+  font-weight: 500;
+}
+
+textarea.glass-input { height: auto !important; min-height: 100px; color: #000000 !important; }
+
+.glass-input:focus {
+  outline: none;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.15) !important;
+}
+
+.glass-input::placeholder { color: #94a3b8 !important; }
+
+label {
+  color: #e2e8f0 !important;
+  font-weight: 700 !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.glass-input:-webkit-autofill,
+.glass-input:-webkit-autofill:hover, 
+.glass-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000000;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+}
+
+/* Avatar */
+.mb-5 p.text-muted.small { color: #64748b !important; opacity: 1 !important; }
+
+.avatar-frame {
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 2px dashed var(--border-dashed);
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.avatar-frame:hover { border-color: var(--accent); background: rgba(45,212,191,0.05); }
+.avatar-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+.avatar-frame label {
+  background-color: var(--accent) !important;
+  color: #0f172a; width: 36px; height: 36px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  position: absolute; bottom: 0; right: 0; cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); margin-bottom: 0;
+}
+
+/* Submit Button */
+button[type="submit"], .btn {
+  background-color: var(--accent) !important;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  border-radius: 6px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none !important;
+}
+
+button:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+}
+
+/* Profile View */
+.profile-header-btn {
+  background: rgba(0,0,0,0.3) !important; 
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  color: #ffffff !important;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+
+.profile-header-btn:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: rgba(0,0,0,0.6) !important;
+}
+
+.info-row {
+  display: flex; align-items: center; padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.info-icon {
+  width: 40px; height: 40px; background: #1e293b; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); margin-right: 16px; flex-shrink: 0;
+}
+
+.info-row span.text-muted {
+  color: #94a3b8 !important;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.info-row span.text-white { font-size: 1rem; font-weight: 500; color: #ffffff !important; }
+
+.social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.social-btn {
+  background: #1e293b; 
+  border: 1px solid rgba(255,255,255,0.05);
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.social-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+/* Animation */
+.fade-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; transform: translateY(10px); }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+
+/* Profile Banner Default */
+.profile-banner {
+  /* Default image, overridden by inline style if custom selected */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.9)), url('/assets/Dubai-city.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding-bottom: 2rem; 
+  position: relative;
+}
+
+.profile-banner h1,
+.profile-banner p.text-info,
+.profile-banner p.bio-text {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  position: relative;
+  z-index: 2;
+}
+
+/* --- NEW CONSULTATION BUTTON STYLE --- */
+.btn-consultation {
+  background: rgba(45, 212, 191, 0.1); /* Subtle teal background */
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  width: 100%;
+  padding: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 6px;
+  margin-top: 12px; /* Spacing from the "Add to Contacts" button */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  /* The Requested "Lighting" (Glow Effect) */
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+}
+
+.btn-consultation:hover {
+  background: var(--accent);
+  color: #0f172a; /* Dark text on hover */
+  box-shadow: 0 0 25px rgba(45, 212, 191, 0.6); /* Intensify glow on hover */
+  transform: translateY(-2px);
+}
