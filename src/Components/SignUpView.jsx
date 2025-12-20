@@ -10,7 +10,7 @@ const SignUpView = ({ onNext, onSwitchToLogin, formData, handleChange }) => (
     </div>
     
     <form onSubmit={(e) => { e.preventDefault(); onNext(); }}>
-      <GlassInput id="fullName" label="Full Name" value={formData.fullName} onChange={handleChange} placeholder="Sarah Connor" />
+      <GlassInput id="fullName" label="Full Name" value={formData.fullName} onChange={handleChange} placeholder="Enter the Name" />
       <GlassInput id="workEmail" label="Email Address" value={formData.workEmail} onChange={handleChange} type="email" placeholder="sarah@example.com" />
       <GlassInput id="password" label="Password" type="password" placeholder="••••••••" required={true} onChange={handleChange} value={formData.password || ""} />
       
