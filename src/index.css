@@ -166,3 +166,121 @@ button:hover { background-color: var(--accent-hover) !important; box-shadow: 0 1
 /* Consultation Button */
 .btn-consultation { background: #ffffff; border: 2px solid var(--accent); color: var(--accent); width: 100%; padding: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; margin-top: 12px; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 0 15px rgba(37, 99, 235, 0.15); }
 .btn-consultation:hover { background: var(--accent); color: #ffffff; box-shadow: 0 0 25px rgba(37, 99, 235, 0.4); transform: translateY(-2px); }
+
+
+/* OnboardingView style steps */
+/* 1. The Wrapper for the Rainbow Button */
+.color-wheel-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* 2. The Rainbow Circle Button */
+.color-wheel-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* Conic Gradient creates the rainbow color wheel effect */
+  background: conic-gradient(
+    from 0deg, 
+    #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff, #ff0080, #ff0000
+  );
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 4px 6px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.color-wheel-btn:hover {
+  transform: scale(1.1) rotate(90deg); /* Spins slightly on hover */
+  box-shadow: 0 0 0 3px var(--accent), 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* 3. The Pop-up Tooltip */
+.color-tooltip {
+  visibility: hidden;
+  background-color: #1e293b;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 6px 10px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%; /* Position above the circle */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* Tooltip Arrow */
+.color-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1e293b transparent transparent transparent;
+}
+
+/* Show Tooltip on Hover */
+.color-wheel-wrapper:hover .color-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 4. The Individual Color Dots */
+.color-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy transition */
+  opacity: 0; /* Hidden initially for animation */
+  animation: popIn 0.4s forwards; /* Trigger animation */
+}
+
+.color-dot:hover {
+  transform: scale(1.2) translateY(-3px) !important;
+}
+
+/* 5. Keyframes for the "In Line" Animation */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0) translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+/* 6. Close Button (Small X) */
+.color-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.7rem;
+  margin-left: 5px;
+  transition: all 0.2s;
+  animation: popIn 0.5s forwards;
+  animation-delay: 0.5s; /* Appears last */
+  opacity: 0;
+}
+
+.color-close-btn:hover {
+  background: rgba(255, 0, 0, 0.5);
+}
