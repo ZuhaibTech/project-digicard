@@ -1,33 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import { initialFormData } from "./data";
 
 // Import Components
-import LandingPage from "./Components/LandingPage";
-import SignUpView from "./Components/SignUpView";
-import LoginView from "./Components/LoginView";
-import OnboardingView from "./Components/OnboardingView";
-import ProfileView from "./Components/ProfileView";
+import LandingPage from "./components/LandingPage";
+import SignUpView from "./components/SignUpView";
+import LoginView from "./components/LoginView";
+import OnboardingView from "./components/OnboardingView";
+import ProfileView from "./components/ProfileView";
+import PrivacyNoticeView from "./Components/PrivacyNoticeView";
+import ThemeToggle from "./Components/ThemeToggle"; // <--- IMPORT NEW COMPONENT
 
 const App = () => {
-  // View State: 'landing' | 'signup' | 'login' | 'onboarding' | 'profile'
   const [currentView, setCurrentView] = useState('landing');
   
-  // Data State
+  // --- THEME LOGIC START ---
+  // Default to 'dark' to match your boss's preference, or check local storage
+  const [theme, setTheme] = useState(localStorage.getItem('app-theme') || 'dark');
+
+  useEffect(() => {
+    // This applies the class to the HTML tag so CSS knows which colors to use
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+  // --- THEME LOGIC END ---
+
   const [formData, setFormData] = useState({
     ...initialFormData,
-    themeColor: '' // Store selected color here
+    themeColor: '' 
   });
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [bannerPreview, setBannerPreview] = useState(null); // Store uploaded banner here
+  const [bannerPreview, setBannerPreview] = useState(null);
 
-  // Text Input Change
+  // ... (Keep your existing handlers: handleChange, handleImageChange, etc.) ...
+  // (I am omitting them here to save space, but DO NOT DELETE THEM from your code)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
-  // Avatar Upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -35,24 +49,17 @@ const App = () => {
       setFormData(prev => ({ ...prev, avatar: file }));
     }
   };
-
-  // --- NEW: Banner Upload Handler ---
   const handleBannerUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setBannerPreview(URL.createObjectURL(file));
-      // Clear specific color if image is uploaded to prioritize image
       setFormData(prev => ({ ...prev, themeColor: '' }));
     }
   };
-
-  // --- NEW: Theme Color Handler ---
   const handleThemeColorSelect = (color) => {
     setFormData(prev => ({ ...prev, themeColor: color }));
-    // Clear banner image if color is selected to prioritize color
     setBannerPreview(null);
   };
-
   const handleProfileSubmit = (e) => {
     e.preventDefault();
     setCurrentView('profile');
@@ -61,11 +68,12 @@ const App = () => {
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center p-3 p-md-5 position-relative overflow-hidden">
       
+      {/* --- ADD TOGGLE BUTTON HERE --- */}
+      <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+
       {/* Background Ambience */}
       <div className="noise-overlay"></div>
-      <div className="position-absolute rounded-circle" style={{width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(100,255,218,0.12) 0%, rgba(0,0,0,0) 70%)', top: '-10%', right: '-10%', filter: 'blur(100px)', zIndex: 0}}></div>
-      <div className="position-absolute rounded-circle" style={{width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(0,0,0,0) 70%)', bottom: '-15%', left: '-15%', filter: 'blur(100px)', zIndex: 0}}></div>
-
+      
       {/* --- Routing --- */}
       {currentView === 'landing' && (
         <LandingPage 
@@ -98,7 +106,6 @@ const App = () => {
           handleChange={handleChange}
           handleImageChange={handleImageChange}
           avatarPreview={avatarPreview}
-          // Pass new handlers
           handleBannerUpload={handleBannerUpload}
           handleThemeColorSelect={handleThemeColorSelect}
           bannerPreview={bannerPreview}
@@ -110,9 +117,16 @@ const App = () => {
         <ProfileView 
           formData={formData}
           avatarPreview={avatarPreview}
-          bannerPreview={bannerPreview} // Pass banner state
+          bannerPreview={bannerPreview}
           onEdit={() => setCurrentView('onboarding')}
           onLogout={() => setCurrentView('login')}
+          onPrivacyClick={() => setCurrentView('privacy')}
+        />
+      )}
+
+      {currentView === 'privacy' && (
+        <PrivacyNoticeView 
+          onBack={() => setCurrentView('profile')} 
         />
       )}
     </div>

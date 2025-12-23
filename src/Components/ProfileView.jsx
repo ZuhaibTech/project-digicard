@@ -1,8 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Icons } from './Icons';
 
-const ProfileView = ({ formData, avatarPreview, bannerPreview, onEdit, onLogout }) => {
+const ProfileView = ({ formData, avatarPreview, bannerPreview, onEdit, onLogout, onPrivacyClick }) => {
   
+  // State for Sticky Button Visibility
+  const [showSticky, setShowSticky] = useState(true);
+  const buttonsSectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // If the static buttons are visible in the viewport, HIDE the sticky button
+        // If they are NOT visible (scrolled down or up), SHOW the sticky button
+        // specifically, we only want to show sticky if the buttons are BELOW the viewport
+        if (entry.isIntersecting) {
+          setShowSticky(false);
+        } else {
+          // Only show sticky if we are above the section (bounding rect top is positive)
+          if (entry.boundingClientRect.top > 0) {
+            setShowSticky(true);
+          } else {
+            // We scrolled past it to the very bottom
+            setShowSticky(false); 
+          }
+        }
+      },
+      {
+        root: null,
+        threshold: 0.1, // Trigger when 10% of the buttons are visible
+        rootMargin: "0px"
+      }
+    );
+
+    if (buttonsSectionRef.current) {
+      observer.observe(buttonsSectionRef.current);
+    }
+
+    return () => {
+      if (buttonsSectionRef.current) {
+        observer.unobserve(buttonsSectionRef.current);
+      }
+    };
+  }, []);
+
   const getBannerStyle = () => {
     if (bannerPreview) {
       return { 
@@ -20,86 +60,107 @@ const ProfileView = ({ formData, avatarPreview, bannerPreview, onEdit, onLogout 
   };
 
   return (
-    <div className="glass-card rounded-4 w-100 overflow-hidden position-relative z-1 fade-up" style={{ maxWidth: "900px" }}>
-      
-      <div className="profile-banner" style={getBannerStyle()}>
-        <div className="d-flex justify-content-between align-items-center p-4">
-          <button onClick={onEdit} className="profile-header-btn">
-            ← Edit Profile
-          </button>
-          <button onClick={onLogout} className="profile-header-btn d-flex align-items-center gap-2">
-            <Icons.Login /> Log Out
-          </button>
+    <>
+      <div className="glass-card rounded-4 w-100 overflow-hidden position-relative z-1 fade-up" style={{ maxWidth: "900px" }}>
+        
+        {/* Banner Area */}
+        <div className="profile-banner" style={getBannerStyle()}>
+          <div className="d-flex justify-content-between align-items-center p-4">
+            <button onClick={onEdit} className="profile-header-btn">
+              ← Edit Profile
+            </button>
+            <button onClick={onLogout} className="profile-header-btn d-flex align-items-center gap-2">
+              <Icons.Login /> Log Out
+            </button>
+          </div>
+
+          <div className="p-5 text-center">
+             <div className="mx-auto mb-4 p-1 rounded-circle border border-2 border-light border-opacity-25" style={{width: '130px', height: '130px'}}>
+               {avatarPreview ? 
+                 <img src={avatarPreview} alt="Avatar" className="rounded-circle w-100 h-100 object-fit-cover" /> : 
+                 <div className="w-100 h-100 bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"><Icons.User /></div>
+               }
+             </div>
+             <h1 className="fw-bold text-white mb-1">{formData.fullName || "Your Name"}</h1>
+             <p className="text-info mb-3" style={{color: '#64ffda'}}>{formData.jobTitle || "Job Title"} @ {formData.companyName || "Company"}</p>
+             <p className="bio-text small max-w-md mx-auto mt-3" style={{maxWidth: '600px'}}>{formData.aboutMe || "No bio provided."}</p>
+          </div>
         </div>
 
-        <div className="p-5 text-center">
-           <div className="mx-auto mb-4 p-1 rounded-circle border border-2 border-light border-opacity-25" style={{width: '130px', height: '130px'}}>
-             {avatarPreview ? 
-               <img src={avatarPreview} alt="Avatar" className="rounded-circle w-100 h-100 object-fit-cover" /> : 
-               <div className="w-100 h-100 bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"><Icons.User /></div>
-             }
+        <div className="row g-0">
+           {/* Left Box (Contact Info) - WHITE */}
+           <div className="col-md-7 p-5 border-end border-secondary border-opacity-10">
+              <h6 className="section-title mb-4">Contact Information</h6>
+              
+              <div className="info-row">
+                <div className="info-icon"><Icons.Phone /></div>
+                <div><span className="label-text">Work Phone</span><span className="value-text">{formData.workPhone || "N/A"}</span></div>
+              </div>
+              <div className="info-row">
+                <div className="info-icon"><Icons.Mail /></div>
+                <div><span className="label-text">Work Email</span><span className="value-text">{formData.workEmail || "N/A"}</span></div>
+              </div>
+              <div className="info-row">
+                <div className="info-icon"><Icons.Globe /></div>
+                <div><span className="label-text">Website</span><span className="value-text">{formData.website || "N/A"}</span></div>
+              </div>
+              
+              <h6 className="section-title mb-4 mt-5">Address</h6>
+              <div className="info-row border-0">
+                <div className="info-icon"><Icons.MapPin /></div>
+                <div>
+                  <span className="value-text d-block">{formData.address || "Street Address"}</span>
+                  <span className="label-text">{formData.city || "City"}, {formData.country || "Country"}</span>
+                </div>
+              </div>
            </div>
-           <h1 className="fw-bold text-white mb-1">{formData.fullName || "Your Name"}</h1>
-           <p className="text-info mb-3" style={{color: '#64ffda'}}>{formData.jobTitle || "Job Title"} @ {formData.companyName || "Company"}</p>
-           <p className="bio-text small max-w-md mx-auto mt-3" style={{maxWidth: '600px'}}>{formData.aboutMe || "No bio provided."}</p>
+
+           {/* Right Box (Socials) - GRAY */}
+           <div className="col-md-5 p-5" style={{background: '#0d1117'}}>
+              <h6 className="section-title mb-4">Social Networks</h6>
+              <div className="social-grid">
+                <button className="social-btn linkedin">LinkedIn <Icons.ArrowRight /></button>
+                <button className="social-btn twitter">X / Twitter <Icons.ArrowRight /></button>
+                <button className="social-btn whatsapp">WhatsApp <Icons.ArrowRight /></button>
+                <button className="social-btn facebook">Facebook <Icons.ArrowRight /></button>
+              </div>
+
+              {/* Reference for Intersection Observer */}
+              <div ref={buttonsSectionRef} className="mt-5 pt-4 border-top border-secondary border-opacity-10">
+                
+                {/* STATIC Add to Contacts Button */}
+                <button className="btn w-100 py-3 fw-bold text-dark d-flex align-items-center justify-content-center gap-2 mb-3"
+                  style={{ background: '#2563eb', color: '#ffffff', border: 'none', borderRadius: '6px' }}>
+                  <Icons.Check /> ADD TO CONTACTS
+                </button>
+                
+                <button className="btn-consultation">
+                  BOOK A CONSULTATION
+                </button>
+
+                <div className="text-center mt-3">
+                  <span 
+                    onClick={onPrivacyClick} 
+                    className="privacy-link small" 
+                    style={{cursor: 'pointer', textDecoration: 'underline'}}
+                  >
+                    Privacy Notice
+                  </span>
+                </div>
+              </div>
+           </div>
         </div>
       </div>
 
-      <div className="row g-0">
-         <div className="col-md-7 p-5 border-end border-secondary border-opacity-10">
-            <h6 className="section-title mb-4">Contact Information</h6>
-            
-            <div className="info-row">
-              <div className="info-icon"><Icons.Phone /></div>
-              <div><span className="label-text">Work Phone</span><span className="value-text">{formData.workPhone || "N/A"}</span></div>
-            </div>
-            <div className="info-row">
-              <div className="info-icon"><Icons.Mail /></div>
-              <div><span className="label-text">Work Email</span><span className="value-text">{formData.workEmail || "N/A"}</span></div>
-            </div>
-            <div className="info-row">
-              <div className="info-icon"><Icons.Globe /></div>
-              <div><span className="label-text">Website</span><span className="value-text">{formData.website || "N/A"}</span></div>
-            </div>
-            
-            <h6 className="section-title mb-4 mt-5">Address</h6>
-            <div className="info-row border-0">
-              <div className="info-icon"><Icons.MapPin /></div>
-              <div>
-                <span className="value-text d-block">{formData.address || "Street Address"}</span>
-                <span className="label-text">{formData.city || "City"}, {formData.country || "Country"}</span>
-              </div>
-            </div>
-         </div>
-
-         <div className="col-md-5 p-5" style={{background: '#0d1117'}}>
-            <h6 className="section-title mb-4">Social Networks</h6>
-            <div className="social-grid">
-              <button className="social-btn linkedin">LinkedIn <Icons.ArrowRight /></button>
-              <button className="social-btn twitter">X / Twitter <Icons.ArrowRight /></button>
-              <button className="social-btn whatsapp">WhatsApp <Icons.ArrowRight /></button>
-              <button className="social-btn facebook">Facebook <Icons.ArrowRight /></button>
-            </div>
-
-            <div className="mt-5 pt-4 border-top border-secondary border-opacity-10">
-              {/* Add to Contacts Button */}
-              <button className="btn w-100 py-3 fw-bold text-dark d-flex align-items-center justify-content-center gap-2"
-                style={{ background: '#2dd4bf', border: 'none', borderRadius: '6px' }}>
-                <Icons.Check /> Add to Contacts
-              </button>
-
-              {/* --- NEW BUTTON: Book a Consultation --- */}
-              <button className="btn-consultation">
-                Book a Consultation
-              </button>
-
-              <div className="text-center mt-3">
-                <a href="#" className="privacy-link small">Privacy Notice</a>
-              </div>
-            </div>
-         </div>
+      {/* --- FLOATING MOBILE STICKY BUTTON --- */}
+      {/* This only appears on mobile when the main button is NOT visible */}
+      <div className={`mobile-sticky-bar ${showSticky ? 'visible' : ''}`}>
+        <button className="btn w-100 py-3 fw-bold text-dark d-flex align-items-center justify-content-center gap-2"
+          style={{ background: '#2563eb', color: '#ffffff', border: 'none', borderRadius: '6px' }}>
+          <Icons.Check /> ADD TO CONTACTS
+        </button>
       </div>
-    </div>
+    </>
   );
 };
 
